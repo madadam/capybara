@@ -37,21 +37,19 @@ module Capybara
         wait_conditionally_until do
           results = all(*args)
 
-          if results.empty?
+          case
+          when results.empty?
             false
+          when options[:between]
+            options[:between] === results.size
+          when options[:count]
+            options[:count] == results.size
+          when options[:maximum]
+            options[:maximum] >= results.size
+          when options[:minimum]
+            options[:minimum] <= results.size
           else
-            case
-            when options[:between]
-              options[:between] === results.size
-            when options[:count]
-              options[:count] == results.size
-            when options[:maximum]
-              options[:maximum] >= results.size
-            when options[:minimum]
-              options[:minimum] <= results.size
-            else
-              results.size > 0
-            end
+            results.size > 0
           end
         end
       rescue Capybara::TimeoutError
@@ -71,21 +69,19 @@ module Capybara
         wait_conditionally_until do
           results = all(*args)
 
-          if results.empty?
+          case
+          when results.empty?
             true
+          when options[:between]
+            not(options[:between] === results.size)
+          when options[:count]
+            not(options[:count] == results.size)
+          when options[:maximum]
+            not(options[:maximum] >= results.size)
+          when options[:minimum]
+            not(options[:minimum] <= results.size)
           else
-            case
-            when options[:between]
-              not(options[:between] === results.size)
-            when options[:count]
-              not(options[:count] == results.size)
-            when options[:maximum]
-              not(options[:maximum] >= results.size)
-            when options[:minimum]
-              not(options[:minimum] <= results.size)
-            else
-              results.empty?
-            end
+            results.empty?
           end
         end
       rescue Capybara::TimeoutError
